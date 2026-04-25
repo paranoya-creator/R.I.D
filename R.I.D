@@ -3,269 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R.I.D LEGION — Neon Edition</title>
+    <title>R.I.D — Legion Control</title>
     <link href="https://googleapis.com" rel="stylesheet">
+    <script src="https://unpkg.com"></script>
     <style>
         :root {
-            --bg: #050208; /* Очень темный фиолетовый */
-            --card: #0d0616;
-            --accent: #bc13fe; /* Неоновый фиолетовый */
-            --accent-glow: #7a00ff;
+            --bg: #06030a;
+            --panel: #0f0a1a;
+            --accent: #9d00ff;
+            --accent-glow: rgba(157, 0, 255, 0.4);
             --text: #ffffff;
         }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            line-height: 1.6;
-        }
-
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; }
+        
         /* Навигация */
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
-            background: rgba(13, 6, 22, 0.9);
-            border-bottom: 2px solid var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; background: rgba(6, 3, 10, 0.95);
+            border-bottom: 1px solid var(--accent); box-shadow: 0 4px 20px var(--accent-glow);
+            position: sticky; top: 0; z-index: 1000;
         }
 
-        .logo-container img {
-            height: 50px; /* Высота для твоего будущего логотипа */
-            display: block;
-        }
+        .logo-box { cursor: pointer; transition: 0.2s; }
+        .logo-box img { height: 45px; display: block; border-radius: 5px; }
 
-        .logo-text {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            color: var(--text);
-            text-shadow: 0 0 10px var(--accent);
-            text-decoration: none;
+        .btn-icon {
+            background: var(--panel); border: 1px solid var(--accent); color: white;
+            padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.3s;
         }
+        .btn-icon:hover { background: var(--accent); box-shadow: 0 0 15px var(--accent); }
 
-        /* Кнопки в стиле киберпанк */
-        .cyber-btn {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--accent);
-            padding: 10px 20px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
-            transition: 0.3s;
-            margin-left: 10px;
-        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
 
-        .cyber-btn:hover {
-            background: var(--accent);
-            box-shadow: 0 0 20px var(--accent);
-            color: black;
-        }
+        /* Карточки */
+        .card { background: var(--panel); border: 1px solid #1e1533; border-radius: 20px; overflow: hidden; transition: 0.4s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .card-info { padding: 20px; text-align: center; }
 
-        /* Консультанты */
-        .staff-section {
-            padding: 50px 20px;
-            text-align: center;
-            background: #080310;
-        }
-
-        .staff-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .staff-card {
-            background: var(--card);
-            border: 1px solid var(--accent);
-            padding: 20px;
-            border-radius: 0 20px 0 20px;
-            transition: 0.3s;
-        }
-
-        .staff-card:hover {
-            box-shadow: 0 0 15px var(--accent);
-        }
-
-        .staff-role {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--accent);
-            font-size: 0.8rem;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        /* Товары */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            padding: 40px;
-        }
-
-        .product-card {
-            background: var(--card);
-            border: 1px solid #221533;
-            transition: 0.4s;
-            padding-bottom: 20px;
-        }
-
-        .product-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
-        }
-
-        .buy-btn-main {
-            background: var(--accent);
-            border: none;
-            color: white;
-            width: 90%;
-            margin: 0 5%;
-            padding: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+        .buy-btn {
+            background: var(--accent); color: white; border: none; padding: 12px;
+            width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
         /* Модалки */
         .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #0d0616;
-            border: 2px solid var(--accent);
-            padding: 30px;
-            z-index: 2000;
-            width: 90%;
-            max-width: 400px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2000;
+        }
+        .modal-content {
+            background: var(--panel); width: 90%; max-width: 450px;
+            margin: 50px auto; padding: 30px; border-radius: 24px;
+            border: 1px solid var(--accent); position: relative; max-height: 80vh; overflow-y: auto;
         }
 
-        input {
-            width: 100%;
-            background: #1a0b2e;
-            border: 1px solid var(--accent);
-            color: white;
-            padding: 12px;
-            margin: 10px 0;
-            box-sizing: border-box;
+        input, select {
+            width: 100%; padding: 12px; margin: 8px 0;
+            background: #06030a; border: 1px solid #332755;
+            color: white; border-radius: 8px; box-sizing: border-box;
         }
+
+        /* Консультанты в настройках */
+        .staff-item {
+            background: #150f25; padding: 15px; border-radius: 15px;
+            margin-bottom: 15px; display: flex; align-items: center; gap: 15px;
+            border: 1px solid transparent; transition: 0.3s;
+        }
+        .staff-item:hover { border-color: var(--accent); }
+        .staff-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+        .staff-info b { color: var(--accent); font-size: 0.7rem; text-transform: uppercase; }
+        .tg-link { color: #0088cc; text-decoration: none; font-size: 0.8rem; display: flex; align-items: center; gap: 5px; }
+
+        .admin-section { border-top: 1px solid #333; margin-top: 20px; padding-top: 20px; }
+        .close-btn { float: right; cursor: pointer; color: #555; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo-container">
-        <!-- Когда добавишь файл логотипа, замени src="logo.png" -->
-        <a href="#" class="logo-text">R.I.D</a>
+    <div class="logo-box" onclick="adminClick()" title="Нажми 5 раз для входа в админку">
+        <img src="logo.png" alt="R.I.D" onerror="this.src='https://placeholder.com'">
     </div>
-    <div class="nav-btns">
-        <button class="cyber-btn" onclick="toggleView('admin-modal')">Админ</button>
-        <button class="cyber-btn" onclick="toggleView('profile-modal')" id="login-btn">Войти</button>
+    <div style="display: flex; gap: 10px;">
+        <button class="btn-icon" onclick="toggleM('profile-modal')"><i data-lucide="user"></i></button>
+        <button class="btn-icon" onclick="toggleM('settings-modal')"><i data-lucide="settings"></i></button>
     </div>
 </nav>
 
 <div class="container">
+    <h2 style="font-family: 'Orbitron'; margin-bottom: 30px;">КАТАЛОГ LEGION</h2>
     <div class="grid" id="catalog"></div>
 </div>
 
-<section class="staff-section">
-    <h2 style="font-family: 'Orbitron';">КОМАНДА LEGION</h2>
-    <div class="staff-grid">
-        <div class="staff-card">
-            <span class="staff-role">CONSULTANT #1</span>
-            <h3>Владелец</h3>
-            <button class="cyber-btn" style="width:100%; margin:0;">Связаться</button>
-        </div>
-        <div class="staff-card">
-            <span class="staff-role">CONSULTANT #2</span>
-            <h3>Зам. Владельца</h3>
-            <button class="cyber-btn" style="width:100%; margin:0;">Связаться</button>
-        </div>
-        <div class="staff-card">
-            <span class="staff-role">CONSULTANT #3</span>
-            <h3>Администратор</h3>
-            <button class="cyber-btn" style="width:100%; margin:0;">Связаться</button>
-        </div>
+<!-- Модалка: Настройки (Консультанты) -->
+<div id="settings-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleM('settings-modal')"><i data-lucide="x"></i></span>
+        <h2 style="font-family: 'Orbitron'">Команда</h2>
+        <div id="staff-list-display"></div>
     </div>
-</section>
-
-<!-- Окна регистрации и админки -->
-<div id="profile-modal" class="modal">
-    <h2 style="font-family: 'Orbitron'; color: var(--accent);">РЕГИСТРАЦИЯ</h2>
-    <input type="text" id="user-name" placeholder="Имя">
-    <input type="email" id="user-email" placeholder="Почта">
-    <button class="buy-btn-main" onclick="login()">СОЗДАТЬ АККАУНТ</button>
-    <button onclick="toggleView('profile-modal')" style="background:none; border:none; color:gray; cursor:pointer; width:100%; margin-top:10px;">Закрыть</button>
 </div>
 
-<div id="admin-modal" class="modal">
-    <h3 style="font-family: 'Orbitron'">ВХОД ДЛЯ ПЕРСОНАЛА</h3>
-    <input type="password" id="admin-pass" placeholder="Пароль">
-    <button class="buy-btn-main" onclick="checkAdmin()">ВОЙТИ</button>
-    <div id="admin-controls" style="display:none; margin-top:20px;">
-        <input type="text" id="p-name" placeholder="Название">
-        <input type="text" id="p-price" placeholder="Цена">
-        <button class="buy-btn-main" onclick="addItem()">ДОБАВИТЬ</button>
+<!-- Модалка: Профиль -->
+<div id="profile-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleM('profile-modal')"><i data-lucide="x"></i></span>
+        <div id="auth-ui">
+            <h3>Вход в Легион</h3>
+            <input type="text" id="u-name" placeholder="Твое Имя">
+            <input type="email" id="u-mail" placeholder="Твоя Почта">
+            <button class="buy-btn" onclick="login()">ВОЙТИ</button>
+        </div>
+        <div id="user-ui" style="display:none;">
+            <h2 id="hello" style="font-family: 'Orbitron'"></h2>
+            <p style="color:var(--accent)">Статус: Активен</p>
+            <button class="buy-btn" onclick="logout()" style="background:#222">ВЫЙТИ</button>
+        </div>
     </div>
-    <button onclick="toggleView('admin-modal')" style="background:none; border:none; color:gray; cursor:pointer; width:100%; margin-top:10px;">Закрыть</button>
+</div>
+
+<!-- Скрытая Админка -->
+<div id="admin-modal" class="modal">
+    <div class="modal-content" style="max-width: 500px;">
+        <span class="close-btn" onclick="toggleM('admin-modal')"><i data-lucide="x"></i></span>
+        <h2 style="font-family: 'Orbitron'">Система</h2>
+        
+        <div id="admin-auth">
+            <input type="password" id="a-pass" placeholder="Пароль">
+            <button class="buy-btn" onclick="checkAdmin()">ВХОД</button>
+        </div>
+
+        <div id="admin-main" style="display:none;">
+            <div class="admin-section">
+                <h4>📦 Добавить товар</h4>
+                <input type="text" id="p-name" placeholder="Название">
+                <input type="text" id="p-price" placeholder="Цена">
+                <button class="buy-btn" onclick="addItem()">ОПУБЛИКОВАТЬ</button>
+            </div>
+
+            <div class="admin-section">
+                <h4>👥 Управление персоналом</h4>
+                <select id="staff-select">
+                    <option value="0">Консультант #1 (Владелец)</option>
+                    <option value="1">Консультант #2 (Зам)</option>
+                    <option value="2">Консультант #3 (Админ)</option>
+                </select>
+                <input type="text" id="st-name" placeholder="Новый Ник">
+                <input type="text" id="st-img" placeholder="Ссылка на аватар (URL)">
+                <input type="text" id="st-tg" placeholder="Ссылка на Telegram (t.me/...)">
+                <button class="buy-btn" style="background:#00b140" onclick="updateStaff()">ОБНОВИТЬ ДАННЫЕ</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    let products = JSON.parse(localStorage.getItem('rid_neon_prod')) || [
-        {name: "Hoodie Phantom", price: "5500 ₽"},
-        {name: "Cyber Mask", price: "2200 ₽"}
+    // Начальные данные (если память пуста)
+    let products = JSON.parse(localStorage.getItem('rid_v3_prod')) || [
+        {name: "Legion Hoodie", price: "5500 ₽"},
+        {name: "R.I.D Accessory", price: "1200 ₽"}
     ];
-    let currentUser = JSON.parse(localStorage.getItem('rid_neon_user')) || null;
+    let staff = JSON.parse(localStorage.getItem('rid_v3_staff')) || [
+        {role: "Владелец", name: "R.I.D Main", img: "", tg: "#"},
+        {role: "Зам. Владельца", name: "Legion Support", img: "", tg: "#"},
+        {role: "Администратор", name: "Staff Manager", img: "", tg: "#"}
+    ];
+    let user = JSON.parse(localStorage.getItem('rid_v3_user')) || null;
+    let clicks = 0;
 
     function render() {
+        // Рендер товаров
         const catalog = document.getElementById('catalog');
-        catalog.innerHTML = '';
-        products.forEach(p => {
-            catalog.innerHTML += `
-                <div class="product-card">
-                    <div style="height:200px; display:flex; align-items:center; justify-content:center; font-size:4rem; background:#11081d;">📦</div>
-                    <div style="padding:20px; text-align:center;">
-                        <h3 style="font-family:'Orbitron'">${p.name}</h3>
-                        <div style="color:var(--accent); font-weight:bold; font-size:1.4rem; margin:10px 0;">${p.price}</div>
-                        <button class="buy-btn-main" onclick="alert('Добавлено!')">КУПИТЬ</button>
-                    </div>
+        catalog.innerHTML = products.map(p => `
+            <div class="card">
+                <div style="height:200px; display:flex; align-items:center; justify-content:center; background:#110a20; font-size:3rem;">📦</div>
+                <div class="card-info">
+                    <h3 style="font-family:'Orbitron'">${p.name}</h3>
+                    <div style="color:var(--accent); font-weight:bold; font-size:1.4rem; margin:10px 0;">${p.price}</div>
+                    <button class="buy-btn" onclick="alert('Заказ создан!')"><i data-lucide="shopping-cart" size="18"></i> КУПИТЬ</button>
                 </div>
-            `;
-        });
-        if(currentUser) document.getElementById('login-btn').innerText = currentUser.name.toUpperCase();
+            </div>
+        `).join('');
+
+        // Рендер консультантов в настройках
+        const staffList = document.getElementById('staff-list-display');
+        staffList.innerHTML = staff.map(s => `
+            <div class="staff-item">
+                <div class="staff-avatar">
+                    ${s.img ? `<img src="${s.img}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">` : `<i data-lucide="user"></i>`}
+                </div>
+                <div class="staff-info">
+                    <b>${s.role}</b><br>
+                    <span>${s.name}</span><br>
+                    <a href="${s.tg}" target="_blank" class="tg-link"><i data-lucide="send" size="12"></i> Telegram</a>
+                </div>
+            </div>
+        `).join('');
+
+        lucide.createIcons();
+        updateProfileUI();
     }
 
-    function login() {
-        const name = document.getElementById('user-name').value;
-        const email = document.getElementById('user-email').value;
-        if(name && email) {
-            currentUser = {name, email};
-            localStorage.setItem('rid_neon_user', JSON.stringify(currentUser));
-            toggleView('profile-modal');
-            render();
-        }
-    }
-
-    function toggleView(id) {
-        const m = document.getElementById(id);
-        m.style.display = m.style.display === 'block' ? 'none' : 'block';
+    // Админка
+    function adminClick() {
+        clicks++;
+        if(clicks >= 5) { toggleM('admin-modal'); clicks = 0; }
+        setTimeout(() => clicks = 0, 2000);
     }
 
     function checkAdmin() {
-        if(document.getElementById('admin-pass').value === 'rid') {
-            document.getElementById('admin-controls').style.display = 'block';
+        if(document.getElementById('a-pass').value === 'rid') {
+            document.getElementById('admin-auth').style.display = 'none';
+            document.getElementById('admin-main').style.display = 'block';
         }
+    }
+
+    function updateStaff() {
+        const id = document.getElementById('staff-select').value;
+        const newName = document.getElementById('st-name').value;
+        const newImg = document.getElementById('st-img').value;
+        const newTg = document.getElementById('st-tg').value;
+
+        if(newName) staff[id].name = newName;
+        if(newImg) staff[id].img = newImg;
+        if(newTg) staff[id].tg = newTg;
+
+        localStorage.setItem('rid_v3_staff', JSON.stringify(staff));
+        render();
+        alert("Данные персонала обновлены!");
     }
 
     function addItem() {
@@ -273,9 +240,37 @@
         const price = document.getElementById('p-price').value;
         if(name && price) {
             products.push({name, price});
-            localStorage.setItem('rid_neon_prod', JSON.stringify(products));
+            localStorage.setItem('rid_v3_prod', JSON.stringify(products));
             render();
         }
+    }
+
+    // Профиль
+    function login() {
+        const n = document.getElementById('u-name').value;
+        const m = document.getElementById('u-mail').value;
+        if(n && m) {
+            user = {name: n, email: m};
+            localStorage.setItem('rid_v3_user', JSON.stringify(user));
+            render();
+        }
+    }
+    function logout() { localStorage.removeItem('rid_v3_user'); user = null; render(); }
+
+    function updateProfileUI() {
+        if(user) {
+            document.getElementById('auth-ui').style.display = 'none';
+            document.getElementById('user-ui').style.display = 'block';
+            document.getElementById('hello').innerText = user.name;
+        } else {
+            document.getElementById('auth-ui').style.display = 'block';
+            document.getElementById('user-ui').style.display = 'none';
+        }
+    }
+
+    function toggleM(id) {
+        const m = document.getElementById(id);
+        m.style.display = m.style.display === 'block' ? 'none' : 'block';
     }
 
     render();
